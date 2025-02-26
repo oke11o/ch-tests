@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/kelseyhightower/envconfig"
 )
@@ -16,6 +17,14 @@ type ClickHouseConfig struct {
 	User     string   `default:"user"`
 	Password string   `default:"password"`
 	Db       string   `default:"mydb"`
+}
+
+func (c *ClickHouseConfig) Dsn() string {
+	host := c.Host[0]
+	databaseURL := fmt.Sprintf("clickhouse://%s/%s?username=%s&password=%s",
+		host, c.Db, c.User, c.Password)
+
+	return databaseURL
 }
 
 func NewConfig(ctx context.Context, prefix string) (*Config, error) {

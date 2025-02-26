@@ -22,9 +22,7 @@ func NewMigrator(_ context.Context, cfg config.ClickHouseConfig, migPath string)
 	if len(cfg.Host) < 1 {
 		return nil, fmt.Errorf("migrator host must be provided")
 	}
-	host := cfg.Host[0]
-	databaseURL := fmt.Sprintf("clickhouse://%s/%s?username=%s&password=%s",
-		host, cfg.Db, cfg.User, cfg.Password)
+	databaseURL := cfg.Dsn()
 
 	m, err := migrate.New(sourceURL, databaseURL)
 	if err != nil {
