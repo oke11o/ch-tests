@@ -1,0 +1,27 @@
+version: '3'
+services:
+  clickhouse:
+    image: clickhouse/clickhouse-server:latest
+    networks: [servicenet]
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse/
+    ports:
+      - 9000:9000
+      - 8123:8123
+    healthcheck:
+      test: [
+        "CMD-SHELL",
+        "clickhouse-client --user $$CLICKHOUSE_USER --password $$CLICKHOUSE_PASSWORD --query 'SELECT 42'"
+      ]
+      interval: 2s
+      retries: 60
+    environment:
+      CLICKHOUSE_USER: user
+      CLICKHOUSE_PASSWORD: password
+      CLICKHOUSE_DB: mydb
+
+networks:
+  servicenet:
+
+volumes:
+  clickhouse-data:
